@@ -1,9 +1,30 @@
 package com.tw.babybonus.disbursement
 
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.Table
 import java.math.BigDecimal
 import java.util.UUID
 import kotlin.time.Instant
 
-class Disbursement constructor(val id: UUID, val enrollmentID: UUID, val type: DisbursementType, val amount: BigDecimal, val status: DisbursementStatus, val processedAt: Instant?) {
+@Entity
+@Table(name = "disbursements")
+class Disbursement(
+
+    @Id
+    var id: UUID,
+
+    var enrollmentID: UUID,
+
+    var type: DisbursementType,
+
+    var amount: BigDecimal,
+
+    var status: DisbursementStatus,
+
+    var processedAt: Instant?
+
+) {
 
 }
