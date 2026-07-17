@@ -1,12 +1,12 @@
 package com.tw.babybonus.validator
 
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import kotlin.test.assertTrue
+import kotlin.test.assertFalse
 
-class NricValidatorTests {
+class NricValidatorTest {
 
-    val nricValidator = NricValidator()
+    private val nricValidator = NricValidator()
 
     @Test
     fun `should return true if NRIC format is valid`() {
