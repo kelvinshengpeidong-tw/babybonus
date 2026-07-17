@@ -1,6 +1,6 @@
-package com.tw.babybonus.child
+package com.tw.babybonus.shared
 
-enum class ChildCitizenship {
+enum class Citizenship {
     SINGAPORE_CITIZEN,
     PERMANENT_RESIDENT,
     FOREIGNER

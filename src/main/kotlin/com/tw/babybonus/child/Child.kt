@@ -1,6 +1,7 @@
 package com.tw.babybonus.child
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.tw.babybonus.shared.Citizenship
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.Table
@@ -18,7 +19,7 @@ class Child(
 
     var dateOfBirth: LocalDate,
 
-    var citizenship: ChildCitizenship
+    var citizenship: Citizenship
 
 ) {
 
