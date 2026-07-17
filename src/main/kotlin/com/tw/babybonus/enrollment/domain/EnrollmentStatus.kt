@@ -1,4 +1,4 @@
-package com.tw.babybonus.enrollment
+package com.tw.babybonus.enrollment.domain
 
 enum class EnrollmentStatus {
     PENDING,

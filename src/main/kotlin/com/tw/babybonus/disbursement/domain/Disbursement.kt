@@ -1,8 +1,8 @@
-package com.tw.babybonus.disbursement
+package com.tw.babybonus.disbursement.domain
 
+import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
 import jakarta.persistence.Table
 import java.math.BigDecimal
 import java.util.UUID
@@ -13,13 +13,14 @@ import kotlin.time.Instant
 class Disbursement(
 
     @Id
-    var id: UUID,
+    val id: UUID = UUID.randomUUID(),
 
-    var enrollmentID: UUID,
+    @Column(name = "enrollment_id")
+    val enrollmentID: UUID,
 
-    var type: DisbursementType,
+    val type: DisbursementType,
 
-    var amount: BigDecimal,
+    val amount: BigDecimal,
 
     var status: DisbursementStatus,
 

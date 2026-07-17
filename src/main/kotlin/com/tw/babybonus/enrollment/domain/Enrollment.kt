@@ -1,5 +1,6 @@
-package com.tw.babybonus.enrollment
+package com.tw.babybonus.enrollment.domain
 
+import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.Table
@@ -11,17 +12,19 @@ import kotlin.time.Instant
 class Enrollment(
 
     @Id
-    var id: UUID,
+    val id: UUID = UUID.randomUUID(),
 
-    var childNric: String,
+    @Column(name = "child_nric")
+    val childNric: String,
 
-    var parentNric: String,
+    @Column(name = "parent_nric")
+    val parentNric: String,
 
     var status: EnrollmentStatus,
 
     var enrolledAt: Instant?,
 
-    var createdAt: Instant
+    val createdAt: Instant
 
 ) {
 

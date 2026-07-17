@@ -1,4 +1,4 @@
-package com.tw.babybonus.parent
+package com.tw.babybonus.parent.domain
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.Entity
@@ -11,11 +11,11 @@ class Parent(
 
     @Id
     @JsonIgnore
-    var nric: String,
+    val nric: String,
 
-    var name: String,
+    val name: String,
 
-    var relationship: ParentRelationship
+    val relationship: ParentRelationship
 
 ) {
 

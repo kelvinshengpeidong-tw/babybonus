@@ -1,4 +1,4 @@
-package com.tw.babybonus.disbursement
+package com.tw.babybonus.disbursement.domain
 
 enum class DisbursementType {
     CASH_GIFT,

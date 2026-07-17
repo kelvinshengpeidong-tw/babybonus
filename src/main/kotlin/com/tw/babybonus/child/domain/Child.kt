@@ -1,4 +1,4 @@
-package com.tw.babybonus.child
+package com.tw.babybonus.child.domain
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.tw.babybonus.shared.Citizenship
@@ -13,11 +13,11 @@ class Child(
 
     @Id
     @JsonIgnore
-    var nric: String,
+    val nric: String,
 
-    var name: String,
+    val name: String,
 
-    var dateOfBirth: LocalDate,
+    val dateOfBirth: LocalDate,
 
     var citizenship: Citizenship
 

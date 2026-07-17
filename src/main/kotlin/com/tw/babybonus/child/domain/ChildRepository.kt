@@ -1,4 +1,4 @@
-package com.tw.babybonus.child
+package com.tw.babybonus.child.domain
 
 import org.springframework.data.jpa.repository.JpaRepository
 

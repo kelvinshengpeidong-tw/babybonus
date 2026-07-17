@@ -1,7 +1,6 @@
-package com.tw.babybonus.parent
+package com.tw.babybonus.parent.domain
 
 import org.springframework.data.jpa.repository.JpaRepository
-import java.util.UUID
 
 interface ParentRepository : JpaRepository<Parent, String> {
 
