@@ -1,6 +1,5 @@
 package com.tw.babybonus.iroas.client
 
-import com.tw.babybonus.ica.domain.Child
 import com.tw.babybonus.iroas.domain.Parent
 import com.tw.babybonus.util.JsonLoaderUtil
 
@@ -9,7 +8,7 @@ class StubIroasClient(
 ): IroasClient {
 
     //resource relative to class path
-    private val resource: String = "/mock-data/iroas_parent.json"
+    private val resource: String = "/mock-data/iroas_parents.json"
 
     private val parents: Map<String, Parent> = loadMockData()
 
@@ -18,8 +17,7 @@ class StubIroasClient(
     }
 
     override fun findParentByNric(nric: String): Parent? {
-        TODO("Not yet implemented")
-
-        //parent nric should be masked when returning the new Parent object
+        //IROAS is still expected to return the full NRIC in the Parent object
+        return parents[nric]
     }
 }

@@ -17,9 +17,8 @@ class StubIcaClient(
     }
 
     override fun findChildByNric(nric: String): Child? {
-        TODO("Not yet implemented")
-
-        //child nric should be masked when returning the new Child object
+        //ICA is still expected to return the full NRIC in the Child object
+        return children[nric]
     }
 
 }
