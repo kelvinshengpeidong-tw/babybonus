@@ -1,4 +1,4 @@
-package com.tw.babybonus.parent.domain
+package com.tw.babybonus.iroas.domain
 
 enum class ParentRelationship {
     FATHER,
