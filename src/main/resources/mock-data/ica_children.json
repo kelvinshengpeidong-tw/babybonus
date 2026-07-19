@@ -1,0 +1,32 @@
+[
+  {
+    "nric": "T2400001A",
+    "name": "Tan Wei Xuan",
+    "dateOfBirth": "2024-01-15",
+    "citizenship": "SINGAPORE_CITIZEN"
+  },
+  {
+    "nric": "T2400002B",
+    "name": "Lee Hui Ling",
+    "dateOfBirth": "2024-03-22",
+    "citizenship": "PERMANENT_RESIDENT"
+  },
+  {
+    "nric": "T2400003C",
+    "name": "Ahmad Bin Ismail",
+    "dateOfBirth": "2024-06-10",
+    "citizenship": "SINGAPORE_CITIZEN"
+  },
+  {
+    "nric": "T2400004D",
+    "name": "Priya D/O Rajan",
+    "dateOfBirth": "2024-02-28",
+    "citizenship": "SINGAPORE_CITIZEN"
+  },
+  {
+    "nric": "T2400005E",
+    "name": "Chen Jia Wei",
+    "dateOfBirth": "2024-08-05",
+    "citizenship": "FOREIGNER"
+  }
+]

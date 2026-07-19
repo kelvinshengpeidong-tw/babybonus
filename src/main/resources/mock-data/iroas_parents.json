@@ -1,0 +1,27 @@
+[
+  {
+    "nric": "S8001234A",
+    "name": "Tan Ah Kow",
+    "relationship": "FATHER"
+  },
+  {
+    "nric": "S8205678B",
+    "name": "Lin Mei Ling",
+    "relationship": "MOTHER"
+  },
+  {
+    "nric": "S7509012C",
+    "name": "Mohamed Ismail Bin Yusof",
+    "relationship": "FATHER"
+  },
+  {
+    "nric": "S9034567D",
+    "name": "Kavitha D/O Subramaniam",
+    "relationship": "MOTHER"
+  },
+  {
+    "nric": "S7812345E",
+    "name": "Chong Beng Huat",
+    "relationship": "LEGAL_GUARDIAN"
+  }
+]
