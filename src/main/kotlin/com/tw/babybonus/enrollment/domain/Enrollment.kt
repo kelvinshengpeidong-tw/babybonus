@@ -1,13 +1,12 @@
 package com.tw.babybonus.enrollment.domain
 
-import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import java.util.UUID
-import kotlin.time.Instant
+import java.time.Instant
 
 @Entity
 @Table(name = "enrollments")

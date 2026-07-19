@@ -2,7 +2,9 @@ package com.tw.babybonus.iroas.client
 
 import com.tw.babybonus.iroas.domain.Parent
 import com.tw.babybonus.util.JsonLoaderUtil
+import org.springframework.stereotype.Component
 
+@Component
 class StubIroasClient(
     private val jsonLoaderUtil: JsonLoaderUtil
 ): IroasClient {

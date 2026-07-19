@@ -8,7 +8,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 import java.math.BigDecimal
 import java.util.UUID
-import kotlin.time.Instant
+import java.time.Instant
 
 @Entity
 @Table(name = "disbursements")

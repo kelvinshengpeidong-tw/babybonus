@@ -2,7 +2,9 @@ package com.tw.babybonus.ica.client
 
 import com.tw.babybonus.ica.domain.Child
 import com.tw.babybonus.util.JsonLoaderUtil
+import org.springframework.stereotype.Component
 
+@Component
 class StubIcaClient(
     private val jsonLoaderUtil: JsonLoaderUtil
 ): IcaClient {
