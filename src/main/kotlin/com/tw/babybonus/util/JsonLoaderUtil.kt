@@ -18,7 +18,7 @@ class JsonLoaderUtil(
             return objectMapper.readValue(input, arrayClass).toList()
         }catch (e: Exception) {
             //throw exception if the required resource is missing or could not be loaded
-            throw DataLoadException("Failed to load json list '$resource'. Reason: $e.message", e)
+            throw DataLoadException("Error: Failed to load json list '$resource'. Reason: $e", e)
         }
     }
 }

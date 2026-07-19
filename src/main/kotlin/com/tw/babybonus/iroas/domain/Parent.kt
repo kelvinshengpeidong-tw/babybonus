@@ -1,7 +1,7 @@
 package com.tw.babybonus.iroas.domain
 
 //Child is an External Data Model from ICA, so it is read-only
-class Parent(
+data class Parent(
 
     val nric: String,
 
