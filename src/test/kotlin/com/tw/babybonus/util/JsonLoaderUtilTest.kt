@@ -11,7 +11,8 @@ import kotlin.test.assertEquals
 
 class JsonLoaderUtilTest {
 
-    private val jsonLoaderUtil = JsonLoaderUtil(objectMapper = ObjectMapper())
+    private val objectMapper = ObjectMapper()
+    private val jsonLoaderUtil = JsonLoaderUtil(objectMapper)
 
     //constants for testing
     val testValidResource: String = "/test-data/test_valid_ica_children.json"
