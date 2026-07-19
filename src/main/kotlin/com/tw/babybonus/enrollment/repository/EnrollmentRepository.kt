@@ -6,4 +6,7 @@ import java.util.UUID
 
 interface EnrollmentRepository : JpaRepository<Enrollment, UUID> {
 
+    //let Spring JPA implement this method based on its name
+    fun existsByChildNric(childNric: String): Boolean
+
 }
