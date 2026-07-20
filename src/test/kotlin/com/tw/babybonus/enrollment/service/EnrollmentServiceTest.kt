@@ -23,6 +23,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNotNull
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.EnumSource
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
@@ -117,8 +119,10 @@ class EnrollmentServiceTest
             assertEquals(response.disbursement.status, DisbursementStatus.PROCESSED)
         }
 
-        @Test
-        fun `should create ineligible enrollment when request is valid but child is ineligible`() {
+        //Repeat the test twice for citizenship=PERMANENT_RESIDENT and FOREIGNER
+        @ParameterizedTest
+        @EnumSource(Citizenship::class, mode = EnumSource.Mode.EXCLUDE, names = ["SINGAPORE_CITIZEN"])
+        fun `should create ineligible enrollment when request is valid but child is not SINGAPORE_CITIZEN`(citizenship: Citizenship) {
             val request = EnrollmentRequest(
                 childNric = "T7654321B",
                 parentNric = "S1231239C"
@@ -128,7 +132,7 @@ class EnrollmentServiceTest
                 nric = "T7654321B",
                 name = "Tan Jia Wei",
                 dateOfBirth = LocalDate.parse("2026-03-20"),
-                citizenship = Citizenship.PERMANENT_RESIDENT
+                citizenship = citizenship
             )
 
             val parent = Parent(
