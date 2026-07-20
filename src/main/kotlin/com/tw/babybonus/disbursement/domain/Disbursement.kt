@@ -18,7 +18,7 @@ class Disbursement(
     val id: UUID = UUID.randomUUID(),
 
     @Column(name = "enrollment_id")
-    val enrollmentID: UUID,
+    val enrollmentId: UUID,
 
     @Enumerated(EnumType.STRING)
     val type: DisbursementType,
