@@ -10,6 +10,7 @@ import com.tw.babybonus.enrollment.dto.request.EnrollmentRequest
 import com.tw.babybonus.enrollment.repository.EnrollmentRepository
 import com.tw.babybonus.exception.ChildNotFoundException
 import com.tw.babybonus.exception.DuplicateEnrollmentException
+import com.tw.babybonus.exception.EnrollmentNotFoundException
 import com.tw.babybonus.exception.ParentNotFoundException
 import com.tw.babybonus.ica.client.IcaClient
 import com.tw.babybonus.ica.domain.Child
@@ -31,9 +32,12 @@ import org.mockito.junit.jupiter.MockitoExtension
 import java.time.LocalDate
 import org.mockito.kotlin.whenever
 import org.mockito.kotlin.any
+import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
-import java.math.BigDecimal
+import java.util.Optional
+import java.util.UUID
 import kotlin.test.assertEquals
+import java.time.Instant
 
 @ExtendWith(MockitoExtension::class)
 class EnrollmentServiceTest
@@ -54,7 +58,7 @@ class EnrollmentServiceTest
     private lateinit var enrollmentService: EnrollmentService
 
     @Nested
-    inner class ChildEnrollmentEligibility {
+    inner class EnrollmentEligibility {
 
         @Test
         fun `should create enrolled enrollment when request is valid and child is eligible`() {
@@ -104,8 +108,8 @@ class EnrollmentServiceTest
                     savedDisbursement
                 }
 
-            //mock the enrollment response
-            val response = enrollmentService.enroll(request)
+            //mock the enrollment
+            enrollmentService.enroll(request)
 
             //verify the saves were called during the enroll process
             verify(enrollmentRepository).save(any())
@@ -113,18 +117,16 @@ class EnrollmentServiceTest
 
             //verify enrollment data
             assertNotNull(savedEnrollment)
-            assertEquals(savedEnrollment.id, response.id)
-            assertEquals("T998****A", response.childNric)
-            assertEquals(EnrollmentStatus.ENROLLED, response.status)
-            assertNotNull(response.enrolledAt)
+            assertEquals("T9988776A", savedEnrollment.childNric)
+            assertEquals(EnrollmentStatus.ENROLLED, savedEnrollment.status)
+            assertNotNull(savedEnrollment.enrolledAt)
+
             //verify disbursement data
             assertNotNull(savedDisbursement)
-            assertEquals(savedDisbursement.enrollmentId, response.id) //verify enrollment id in disbursement
-            //verify content of the nested disbursement object
-            assertNotNull(response.disbursement)
-            assertEquals(response.disbursement.type, DisbursementType.CASH_GIFT)
-            assertEquals(BigDecimal("3000.00"), response.disbursement.amount)
-            assertEquals(response.disbursement.status, DisbursementStatus.PROCESSED)
+            assertEquals(savedEnrollment.id, savedDisbursement.enrollmentId)
+            assertEquals(DisbursementType.CASH_GIFT, savedDisbursement.type)
+            assertEquals(BabyBonusConstants.CASH_GIFT_AMOUNT_AT_BIRTH, savedDisbursement.amount)
+            assertEquals(DisbursementStatus.PROCESSED, savedDisbursement.status)
         }
 
         //Repeat the test twice for citizenship=PERMANENT_RESIDENT and FOREIGNER
@@ -169,20 +171,20 @@ class EnrollmentServiceTest
                     savedEnrollment
                 }
 
-            //mock the enrollment response
-            val response = enrollmentService.enroll(request)
+            //mock the enrollment
+            enrollmentService.enroll(request)
 
             //verify the save was called during the enroll process
             verify(enrollmentRepository).save(any())
 
+            //verify disbursement not created for an ineligible enrollment
+            verify(disbursementRepository, never()).save(any())
+
             //verify enrollment data
             assertNotNull(savedEnrollment)
-            assertEquals(savedEnrollment.id, response.id)
-            assertEquals("T765****B", response.childNric)
-            assertEquals(EnrollmentStatus.INELIGIBLE, response.status)
-            assertNull(response.enrolledAt)
-            //verify disbursement is null
-            assertNull(response.disbursement)
+            assertEquals("T7654321B", savedEnrollment.childNric)
+            assertEquals(EnrollmentStatus.INELIGIBLE, savedEnrollment.status)
+            assertNull(savedEnrollment.enrolledAt)
         }
 
         @Test
@@ -265,6 +267,100 @@ class EnrollmentServiceTest
                 enrollmentService.enroll(request)
             }
         }
+    }
 
+    @Nested
+    inner class GetEnrollment {
+
+        @Test
+        fun `should return enrollment response with disbursement when enrollment retrieved has ENROLLED status`() {
+
+            val enrollmentId = UUID.randomUUID()
+            val disbursementId = UUID.randomUUID()
+
+            //enrollment with ENROLLED status
+            val enrollment = Enrollment(
+                id = enrollmentId,
+                childNric = "T9988776A",
+                parentNric = "S1234567A",
+                status = EnrollmentStatus.ENROLLED,
+                enrolledAt = Instant.now(),
+                createdAt = Instant.now()
+            )
+
+            val disbursement = Disbursement(
+                id = disbursementId,
+                enrollmentId = enrollmentId,
+                type = DisbursementType.CASH_GIFT,
+                amount = BabyBonusConstants.CASH_GIFT_AMOUNT_AT_BIRTH,
+                status = DisbursementStatus.PROCESSED,
+                processedAt = Instant.now()
+            )
+
+            //mock the enrollment is returned when find by its id
+            whenever(enrollmentRepository.findById(enrollmentId))
+                .thenReturn(Optional.of(enrollment))
+
+            //mock the disbursement is returned when find by its enrollment id
+            whenever(disbursementRepository.findAllByEnrollmentId(enrollmentId))
+                .thenReturn(listOf(disbursement))
+
+            val response = enrollmentService.getEnrollment(enrollmentId)
+
+            //verify response data
+            assertEquals(enrollmentId, response.id)
+            assertEquals("T998****A", response.childNric)
+            assertEquals(EnrollmentStatus.ENROLLED, response.status)
+            assertNotNull(response.enrolledAt)
+
+            //verify nested disbursement in response data
+            assertNotNull(response.disbursement)
+            assertEquals(DisbursementType.CASH_GIFT, response.disbursement.type)
+            assertEquals(BabyBonusConstants.CASH_GIFT_AMOUNT_AT_BIRTH, response.disbursement.amount)
+            assertEquals(DisbursementStatus.PROCESSED, response.disbursement.status)
+        }
+
+        @Test
+        fun `should return enrollment response with no disbursement when enrollment retrieved has INELIGIBLE status`() {
+            val enrollmentId = UUID.randomUUID()
+
+            //enrollment with INELIGIBLE status
+            val enrollment = Enrollment(
+                id = enrollmentId,
+                childNric = "T7654321B",
+                parentNric = "S9879870D",
+                status = EnrollmentStatus.INELIGIBLE,
+                enrolledAt = null,
+                createdAt = Instant.now()
+            )
+
+            //mock the enrollment is returned when find by its id
+            whenever(enrollmentRepository.findById(enrollmentId))
+                .thenReturn(Optional.of(enrollment))
+
+            //mock no disbursement is returned when find by its enrollment id
+            whenever(disbursementRepository.findAllByEnrollmentId(enrollmentId))
+                .thenReturn(emptyList())
+
+            val response = enrollmentService.getEnrollment(enrollmentId)
+
+            assertEquals(enrollmentId, response.id)
+            assertEquals("T765****B", response.childNric)
+            assertEquals(EnrollmentStatus.INELIGIBLE, response.status)
+            assertNull(response.enrolledAt)
+            assertNull(response.disbursement)
+        }
+
+        @Test
+        fun `should throw exception if enrollment is not found`() {
+            val unknownEnrollmentID = UUID.randomUUID()
+
+            whenever(enrollmentRepository.findById(unknownEnrollmentID))
+                .thenReturn(Optional.empty())
+
+            assertThrows<EnrollmentNotFoundException> {
+                enrollmentService.getEnrollment(unknownEnrollmentID)
+            }
+        }
     }
 }

@@ -12,6 +12,7 @@ import com.tw.babybonus.enrollment.dto.response.EnrollmentResponse
 import com.tw.babybonus.enrollment.repository.EnrollmentRepository
 import com.tw.babybonus.exception.ChildNotFoundException
 import com.tw.babybonus.exception.DuplicateEnrollmentException
+import com.tw.babybonus.exception.EnrollmentNotFoundException
 import com.tw.babybonus.exception.ParentNotFoundException
 import com.tw.babybonus.ica.client.IcaClient
 import com.tw.babybonus.iroas.client.IroasClient
@@ -20,6 +21,7 @@ import com.tw.babybonus.shared.Citizenship
 import com.tw.babybonus.validator.NricValidator
 import org.springframework.stereotype.Service
 import java.time.Instant
+import java.util.UUID
 
 @Service
 class EnrollmentService(
@@ -31,7 +33,7 @@ class EnrollmentService(
 
     //EnrollmentService is expected to return the masked NRIC in the response
 
-    fun enroll(request: EnrollmentRequest): EnrollmentResponse {
+    fun enroll(request: EnrollmentRequest) {
 
         //normalize and validate the format of the child and parent NRIC
         val normalizedChildNric: String = NricValidator.formatAndValidateNric(request.childNric)
@@ -49,9 +51,6 @@ class EnrollmentService(
             createdAt = Instant.now()
         )
 
-        var disbursement: Disbursement? = null
-        var disbursementResponse: DisbursementResponse? = null
-
         //change enrollment status depending on eligibility
         if(eligible) {
             enrollment.status = EnrollmentStatus.ENROLLED
@@ -59,20 +58,32 @@ class EnrollmentService(
             enrollmentRepository.save(enrollment)
 
             //initiate a cash gift disbursement of $3,000
-            disbursement = createCashGift(enrollment)
-
-            disbursementResponse = DisbursementResponse(
-                type = disbursement.type,
-                amount = disbursement.amount,
-                status = disbursement.status
-            )
+            createCashGift(enrollment)
         }
         else {
             enrollment.status = EnrollmentStatus.INELIGIBLE
             //enrolledAt will remain null since enrollment is not successful
             enrollmentRepository.save(enrollment)
 
-            //disbursement and disbursementResponse will also remain null
+            //no disbursement is created
+        }
+    }
+
+    fun getEnrollment(enrollmentId: UUID): EnrollmentResponse {
+
+        val enrollment = enrollmentRepository.findById(enrollmentId)
+            .orElseThrow { EnrollmentNotFoundException() }
+
+        val disbursements: List<Disbursement> = disbursementRepository.findAllByEnrollmentId(enrollmentId)
+
+        //account for empty list when enrollment status is INELIGIBLE
+        //if not null, get the first disbursement in list which should be CASH_GIFT_AT_BIRTH and set values for the DisbursementResponse
+        val disbursementResponse: DisbursementResponse? = disbursements.firstOrNull()?.let {
+            DisbursementResponse(
+                type = it.type,
+                amount = it.amount,
+                status = it.status
+            )
         }
 
         //child NRIC will be masked in response
@@ -119,7 +130,7 @@ class EnrollmentService(
         return true
     }
 
-    private fun createCashGift(enrollment : Enrollment): Disbursement {
+    private fun createCashGift(enrollment : Enrollment) {
         val disbursement = Disbursement(
             enrollmentId = enrollment.id,
             type = DisbursementType.CASH_GIFT,
@@ -128,7 +139,7 @@ class EnrollmentService(
             processedAt = Instant.now()
         )
 
-        return disbursementRepository.save(disbursement)
+        disbursementRepository.save(disbursement)
     }
 
 }
