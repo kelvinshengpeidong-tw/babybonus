@@ -15,7 +15,7 @@ data class EnrollmentResponse(
 
     val enrolledAt: Instant?,
 
-    val disbursement: DisbursementResponse
+    val disbursement: DisbursementResponse?
 
 ) {
 
