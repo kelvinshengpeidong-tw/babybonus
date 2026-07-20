@@ -1,20 +1,9 @@
 package com.tw.babybonus.privacy
 
-import com.tw.babybonus.exception.InvalidNricException
-import com.tw.babybonus.validator.NricValidator
+object DataMasker {
 
-class DataMasker(
-    private val nricValidator: NricValidator
-) {
-
-    fun maskNric(nric: String): String {
-        val normalizedNric = nric.trim().uppercase()
-
-        //check validity of NRIC format
-        if(!nricValidator.isNricFormatValid(normalizedNric)) {
-            throw InvalidNricException("NRIC format is invalid!")
-        }
-
+    //input is assumed to have been normalized and validated
+    fun maskNric(normalizedNric: String): String {
         //masked the 4 chars in between
         return normalizedNric.substring(0, 4) + "****" + normalizedNric.last()
     }
