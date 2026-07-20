@@ -88,6 +88,7 @@ class EnrollmentServiceTest
             ).thenReturn(false)
 
             var savedEnrollment: Enrollment? = null //use this only for id comparison
+            var savedDisbursement: Disbursement? = null //use this only for id comparison
 
             //mock the enrollment being returned back from save and also save it in variable
             whenever(enrollmentRepository.save(any<Enrollment>()))
@@ -98,7 +99,10 @@ class EnrollmentServiceTest
 
             //mock the disbursement being returned back from save
             whenever(disbursementRepository.save(any<Disbursement>()))
-                .thenAnswer { it.arguments[0] as Disbursement }
+                .thenAnswer {
+                    savedDisbursement = it.arguments[0] as Disbursement
+                    savedDisbursement
+                }
 
             //mock the enrollment response
             val response = enrollmentService.enroll(request)
@@ -108,10 +112,14 @@ class EnrollmentServiceTest
             verify(disbursementRepository).save(any())
 
             //verify enrollment data
-            assertEquals(savedEnrollment?.id, response.id)
+            assertNotNull(savedEnrollment)
+            assertEquals(savedEnrollment.id, response.id)
             assertEquals("T998****A", response.childNric)
             assertEquals(EnrollmentStatus.ENROLLED, response.status)
             assertNotNull(response.enrolledAt)
+            //verify disbursement data
+            assertNotNull(savedDisbursement)
+            assertEquals(savedDisbursement.enrollmentId, response.id) //verify enrollment id in disbursement
             //verify content of the nested disbursement object
             assertNotNull(response.disbursement)
             assertEquals(response.disbursement.type, DisbursementType.CASH_GIFT)
@@ -168,7 +176,8 @@ class EnrollmentServiceTest
             verify(enrollmentRepository).save(any())
 
             //verify enrollment data
-            assertEquals(savedEnrollment?.id, response.id)
+            assertNotNull(savedEnrollment)
+            assertEquals(savedEnrollment.id, response.id)
             assertEquals("T765****B", response.childNric)
             assertEquals(EnrollmentStatus.INELIGIBLE, response.status)
             assertNull(response.enrolledAt)
