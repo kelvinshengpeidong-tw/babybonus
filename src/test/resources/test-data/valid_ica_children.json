@@ -1,0 +1,26 @@
+[
+  {
+    "nric": "T1234567A",
+    "name": "Lim Wei Ting",
+    "dateOfBirth": "2026-02-09",
+    "citizenship": "SINGAPORE_CITIZEN"
+  },
+  {
+    "nric": "T7654321B",
+    "name": "Tan Jia Wei",
+    "dateOfBirth": "2026-03-20",
+    "citizenship": "PERMANENT_RESIDENT"
+  },
+  {
+    "nric": "T1122334C",
+    "name": "Jack En",
+    "dateOfBirth": "2026-06-06",
+    "citizenship": "FOREIGNER"
+  },
+  {
+    "nric": "T9988776A",
+    "name": "Mack Lim",
+    "dateOfBirth": "2026-02-09",
+    "citizenship": "SINGAPORE_CITIZEN"
+  }
+]
