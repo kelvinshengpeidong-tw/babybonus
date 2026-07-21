@@ -8,6 +8,7 @@ import com.tw.babybonus.enrollment.dto.request.CreateEnrollmentRequest
 import com.tw.babybonus.enrollment.dto.response.EnrollmentCreatedResponse
 import com.tw.babybonus.enrollment.repository.EnrollmentRepository
 import com.tw.babybonus.enrollment.service.BabyBonusConstants
+import com.tw.babybonus.exception.ErrorMessages
 import org.hamcrest.Matchers.notNullValue
 import org.hamcrest.Matchers.nullValue
 import org.springframework.http.MediaType
@@ -23,6 +24,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.transaction.annotation.Transactional
 import tools.jackson.databind.ObjectMapper
+import java.util.UUID
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
@@ -173,6 +175,120 @@ class EnrollmentIntegrationTest {
             jsonPath("$.enrolledAt", nullValue())
         ).andExpect(
             jsonPath("$.disbursement", nullValue())
+        )
+    }
+
+    @Test
+    fun `should return http status 404 when child does not exist in ICA records`() {
+
+        val postRequest = CreateEnrollmentRequest(
+            childNric = "T1111111A", // unknown
+            parentNric = "S8001234A"  // Tan Ah Kow
+        )
+
+        val postRequestJson = objectMapper.writeValueAsString(postRequest)
+
+        //1. POST enrollment
+        mockMvc.perform(
+            post(postUrl)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(postRequestJson)
+        ).andExpect(
+            status().isNotFound
+        ).andExpect(
+            jsonPath("$.message").value(ErrorMessages.CHILD_NOT_FOUND)
+        )
+    }
+
+    @Test
+    fun `should return http status 404 when parent does not exist in IROAS records`() {
+
+        val postRequest = CreateEnrollmentRequest(
+            childNric = "T2400001A", // Tan Wei Xuan
+            parentNric = "S1111111A"  // unknown
+        )
+
+        val postRequestJson = objectMapper.writeValueAsString(postRequest)
+
+        //1. POST enrollment
+        mockMvc.perform(
+            post(postUrl)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(postRequestJson)
+        ).andExpect(
+            status().isNotFound
+        ).andExpect(
+            jsonPath("$.message").value(ErrorMessages.PARENT_NOT_FOUND)
+        )
+    }
+
+    @Test
+    fun `should return http status 400 when child NRIC is invalid`() {
+
+        val postRequest = CreateEnrollmentRequest(
+            childNric = "T24001A",    // invalid format
+            parentNric = "S8001234A"  // Tan Ah Kow
+        )
+
+        val postRequestJson = objectMapper.writeValueAsString(postRequest)
+
+        //1. POST enrollment
+        mockMvc.perform(
+            post(postUrl)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(postRequestJson)
+        ).andExpect(
+            status().isBadRequest
+        ).andExpect(
+            jsonPath("$.message").value(ErrorMessages.INVALID_NRIC)
+        )
+    }
+
+    @Test
+    fun `should return http status 409 when child already has a PENDING or ENROLLED enrollment`() {
+
+        val postRequest = CreateEnrollmentRequest(
+            childNric = "T2400001A", // Tan Wei Xuan
+            parentNric = "S8001234A"  // Tan Ah Kow
+        )
+
+        val postRequestJson = objectMapper.writeValueAsString(postRequest)
+
+        //1. first POST enrollment for child
+        mockMvc.perform(
+            post(postUrl)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(postRequestJson)
+        ).andExpect(
+            status().isCreated
+        )
+
+        //2. second POST enrollment for child
+        mockMvc.perform(
+            post(postUrl)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(postRequestJson)
+        ).andExpect(
+            status().isConflict
+        ).andExpect(
+            jsonPath("$.message").value(ErrorMessages.ENROLLMENT_ALREADY_EXISTS)
+        )
+    }
+
+    @Test
+    fun `should return http status 404 when enrollment id does not exist`() {
+
+        val unknownEnrollmentId = UUID.randomUUID()
+        val getUrl = "/api/v1/enrollments/${unknownEnrollmentId}"
+
+        //1. GET the enrollment through API endpoint
+        mockMvc.perform(
+            get(getUrl)
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+            status().isNotFound
+        ).andExpect(
+            jsonPath("$.message").value(ErrorMessages.ENROLLMENT_NOT_FOUND)
         )
     }
 

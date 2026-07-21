@@ -12,55 +12,55 @@ class GlobalExceptionHandler {
     //***error messages in this class should be more generic to avoid exposing implementation details***
 
     @ExceptionHandler(ChildNotFoundException::class)
-    fun handleChildNotFoundException(e: ChildNotFoundException): ResponseEntity<ErrorResponse> {
+    fun handleChildNotFoundException(): ResponseEntity<ErrorResponse> {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
             ErrorResponse(
-                message = "Child not found"
+                message = ErrorMessages.CHILD_NOT_FOUND
             )
         )
     }
 
     @ExceptionHandler(ParentNotFoundException::class)
-    fun handleParentNotFoundException(e: ParentNotFoundException): ResponseEntity<ErrorResponse> {
+    fun handleParentNotFoundException(): ResponseEntity<ErrorResponse> {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
             ErrorResponse(
-                message = "Parent not found"
+                message = ErrorMessages.PARENT_NOT_FOUND
             )
         )
     }
 
     @ExceptionHandler(DuplicateEnrollmentException::class)
-    fun handleDuplicateEnrollmentException(e: DuplicateEnrollmentException): ResponseEntity<ErrorResponse> {
+    fun handleDuplicateEnrollmentException(): ResponseEntity<ErrorResponse> {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(
             ErrorResponse(
-                message = "Enrollment already exists"
+                message = ErrorMessages.ENROLLMENT_ALREADY_EXISTS
             )
         )
     }
 
     @ExceptionHandler(EnrollmentNotFoundException::class)
-    fun handleEnrollmentNotFoundException(e: EnrollmentNotFoundException): ResponseEntity<ErrorResponse> {
+    fun handleEnrollmentNotFoundException(): ResponseEntity<ErrorResponse> {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
             ErrorResponse(
-                message = "Enrollment not found"
+                message = ErrorMessages.ENROLLMENT_NOT_FOUND
             )
         )
     }
 
     @ExceptionHandler(InvalidNricException::class)
-    fun handleInvalidNricException(e: InvalidNricException): ResponseEntity<ErrorResponse> {
+    fun handleInvalidNricException(): ResponseEntity<ErrorResponse> {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
             ErrorResponse(
-                message = "Invalid NRIC"
+                message = ErrorMessages.INVALID_NRIC
             )
         )
     }
 
     @ExceptionHandler(DataLoadException::class)
-    fun handleDataLoadException(e: DataLoadException): ResponseEntity<ErrorResponse> {
+    fun handleDataLoadException(): ResponseEntity<ErrorResponse> {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
             ErrorResponse(
-                message = "An internal server error has occurred"
+                message = ErrorMessages.INTERNAL_SERVER_ERROR
             )
         )
     }
