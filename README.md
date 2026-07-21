@@ -258,8 +258,4 @@ but in reality a child could receive CDA top-ups over multiple years. This shoul
 rather than relying solely on masking at the API boundary
 
 
-- **Add request validation**: e.g. `@Valid`/Bean Validation on `CreateEnrollmentRequest` for cleaner 400 responses instead of relying purely on 
-downstream exception handling
-
-
 - **Authentication/authorization**: no auth is currently implemented to secure the API endpoints; endpoints are open for access to anyone
