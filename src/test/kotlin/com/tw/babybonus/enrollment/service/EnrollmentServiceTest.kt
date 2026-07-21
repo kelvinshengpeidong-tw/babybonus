@@ -59,7 +59,7 @@ class EnrollmentServiceTest
     private lateinit var enrollmentService: EnrollmentService
 
     @Nested
-    inner class EnrollmentEligibility {
+    inner class CreateEnrollment {
 
         @Test
         fun `should create enrolled enrollment when request is valid and child is eligible`() {
