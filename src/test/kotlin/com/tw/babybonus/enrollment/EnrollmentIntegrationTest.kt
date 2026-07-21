@@ -245,6 +245,28 @@ class EnrollmentIntegrationTest {
     }
 
     @Test
+    fun `should return http status 400 when parent NRIC is invalid`() {
+
+        val postRequest = CreateEnrollmentRequest(
+            childNric = "T2400001A", // Tan Wei Xuan
+            parentNric = "S800A234A"    // invalid format
+        )
+
+        val postRequestJson = objectMapper.writeValueAsString(postRequest)
+
+        //1. POST enrollment
+        mockMvc.perform(
+            post(postUrl)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(postRequestJson)
+        ).andExpect(
+            status().isBadRequest
+        ).andExpect(
+            jsonPath("$.message").value(ErrorMessages.INVALID_NRIC)
+        )
+    }
+
+    @Test
     fun `should return http status 409 when child already has a PENDING or ENROLLED enrollment`() {
 
         val postRequest = CreateEnrollmentRequest(

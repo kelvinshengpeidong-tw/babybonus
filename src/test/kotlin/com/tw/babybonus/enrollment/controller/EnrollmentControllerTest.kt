@@ -15,6 +15,7 @@ import com.tw.babybonus.exception.EnrollmentNotFoundException
 import com.tw.babybonus.exception.GlobalExceptionHandler
 import com.tw.babybonus.exception.InvalidNricException
 import com.tw.babybonus.exception.ParentNotFoundException
+import org.hamcrest.Matchers.nullValue
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.whenever
@@ -257,7 +258,7 @@ class EnrollmentControllerTest {
             val enrollmentGetResponse = EnrollmentGetResponse(
                 id = enrollmentId,
                 childNric = maskedChildNric,
-                status = EnrollmentStatus.ENROLLED,
+                status = EnrollmentStatus.INELIGIBLE,
                 enrolledAt = null,
                 disbursement = null
             )
@@ -265,21 +266,22 @@ class EnrollmentControllerTest {
             whenever(enrollmentService.getEnrollment(enrollmentId))
                 .thenReturn(enrollmentGetResponse)
 
-            val result = mockMvc.perform(
+            mockMvc.perform(
                 get(getUrl)
                     .contentType(MediaType.APPLICATION_JSON)
             ).andExpect(
                 status().isOk
-            ).andReturn()
-
-            //deserialize the response back to EnrollmentGetResponse object
-            val actualResponse = objectMapper.readValue(
-                result.response.contentAsString,
-                EnrollmentGetResponse::class.java
+            ).andExpect(
+                jsonPath("$.id").value(enrollmentId.toString())
+            ).andExpect(
+                jsonPath("$.childNric").value("T765****B")
+            ).andExpect(
+                jsonPath("$.status").value(EnrollmentStatus.INELIGIBLE.name)
+            ).andExpect(
+                jsonPath("$.enrolledAt", nullValue())
+            ).andExpect(
+                jsonPath("$.disbursement", nullValue())
             )
-
-            //compare the response object directly
-            assertEquals<EnrollmentGetResponse>(enrollmentGetResponse, actualResponse)
         }
 
         @Test
