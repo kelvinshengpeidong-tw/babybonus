@@ -26,11 +26,9 @@ class EnrollmentController(
         return ResponseEntity.status(HttpStatus.CREATED).body(enrollmentCreatedResponse)
     }
 
-    /*
     @GetMapping("/{id}")
-    fun getEnrollments(@PathVariable id: UUID): ResponseEntity<EnrollmentGetResponse> {
+    fun getEnrollment(@PathVariable id: UUID): ResponseEntity<EnrollmentGetResponse> {
         val response = enrollmentService.getEnrollment(id)
         return ResponseEntity.status(HttpStatus.OK).body(response)
     }
-    */
 }
