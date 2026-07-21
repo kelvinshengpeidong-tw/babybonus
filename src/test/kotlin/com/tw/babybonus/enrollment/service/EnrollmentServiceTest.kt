@@ -6,7 +6,8 @@ import com.tw.babybonus.disbursement.domain.DisbursementType
 import com.tw.babybonus.disbursement.repository.DisbursementRepository
 import com.tw.babybonus.enrollment.domain.Enrollment
 import com.tw.babybonus.enrollment.domain.EnrollmentStatus
-import com.tw.babybonus.enrollment.dto.request.EnrollmentRequest
+import com.tw.babybonus.enrollment.dto.request.CreateEnrollmentRequest
+import com.tw.babybonus.enrollment.dto.response.EnrollmentCreatedResponse
 import com.tw.babybonus.enrollment.repository.EnrollmentRepository
 import com.tw.babybonus.exception.ChildNotFoundException
 import com.tw.babybonus.exception.DuplicateEnrollmentException
@@ -62,7 +63,7 @@ class EnrollmentServiceTest
 
         @Test
         fun `should create enrolled enrollment when request is valid and child is eligible`() {
-            val request = EnrollmentRequest(
+            val request = CreateEnrollmentRequest(
                 childNric = "T9988776A",
                 parentNric = "S1234567A"
             )
@@ -109,7 +110,7 @@ class EnrollmentServiceTest
                 }
 
             //mock the enrollment
-            enrollmentService.enroll(request)
+            val enrollmentCreatedResponse: EnrollmentCreatedResponse = enrollmentService.enroll(request)
 
             //verify the saves were called during the enroll process
             verify(enrollmentRepository).save(any())
@@ -127,13 +128,16 @@ class EnrollmentServiceTest
             assertEquals(DisbursementType.CASH_GIFT, savedDisbursement.type)
             assertEquals(BabyBonusConstants.CASH_GIFT_AMOUNT_AT_BIRTH, savedDisbursement.amount)
             assertEquals(DisbursementStatus.PROCESSED, savedDisbursement.status)
+
+            //verify the id returned in response
+            assertEquals(savedEnrollment.id, enrollmentCreatedResponse.enrollmentID)
         }
 
         //Repeat the test twice for citizenship=PERMANENT_RESIDENT and FOREIGNER
         @ParameterizedTest
         @EnumSource(Citizenship::class, mode = EnumSource.Mode.EXCLUDE, names = ["SINGAPORE_CITIZEN"])
         fun `should create ineligible enrollment when request is valid but child is not SINGAPORE_CITIZEN`(citizenship: Citizenship) {
-            val request = EnrollmentRequest(
+            val request = CreateEnrollmentRequest(
                 childNric = "T7654321B",
                 parentNric = "S1231239C"
             )
@@ -172,7 +176,7 @@ class EnrollmentServiceTest
                 }
 
             //mock the enrollment
-            enrollmentService.enroll(request)
+            val enrollmentCreatedResponse: EnrollmentCreatedResponse = enrollmentService.enroll(request)
 
             //verify the save was called during the enroll process
             verify(enrollmentRepository).save(any())
@@ -185,11 +189,14 @@ class EnrollmentServiceTest
             assertEquals("T7654321B", savedEnrollment.childNric)
             assertEquals(EnrollmentStatus.INELIGIBLE, savedEnrollment.status)
             assertNull(savedEnrollment.enrolledAt)
+
+            //verify the id returned in response
+            assertEquals(savedEnrollment.id, enrollmentCreatedResponse.enrollmentID)
         }
 
         @Test
         fun `should throw exception if child does not exist in records`() {
-            val request = EnrollmentRequest(
+            val request = CreateEnrollmentRequest(
                 childNric = "T1111111B",
                 parentNric = "S1231239C"
             )
@@ -206,7 +213,7 @@ class EnrollmentServiceTest
 
         @Test
         fun `should throw exception if parent does not exist in records`() {
-            val request = EnrollmentRequest(
+            val request = CreateEnrollmentRequest(
                 childNric = "T9988776A",
                 parentNric = "S1111111C"
             )
@@ -233,7 +240,7 @@ class EnrollmentServiceTest
 
         @Test
         fun `should throw exception if child is already enrolled`() {
-            val request = EnrollmentRequest(
+            val request = CreateEnrollmentRequest(
                 childNric = "T9988776A",
                 parentNric = "S1234567A"
             )
@@ -273,7 +280,7 @@ class EnrollmentServiceTest
     inner class GetEnrollment {
 
         @Test
-        fun `should return enrollment response with disbursement when enrollment retrieved has ENROLLED status`() {
+        fun `should return enrollment get response with disbursement when enrollment retrieved has ENROLLED status`() {
 
             val enrollmentId = UUID.randomUUID()
             val disbursementId = UUID.randomUUID()
@@ -321,7 +328,7 @@ class EnrollmentServiceTest
         }
 
         @Test
-        fun `should return enrollment response with no disbursement when enrollment retrieved has INELIGIBLE status`() {
+        fun `should return enrollment get response with no disbursement when enrollment retrieved has INELIGIBLE status`() {
             val enrollmentId = UUID.randomUUID()
 
             //enrollment with INELIGIBLE status

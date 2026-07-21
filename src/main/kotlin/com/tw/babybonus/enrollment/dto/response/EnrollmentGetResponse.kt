@@ -5,7 +5,7 @@ import com.tw.babybonus.enrollment.domain.EnrollmentStatus
 import java.util.UUID
 import java.time.Instant
 
-data class EnrollmentResponse(
+data class EnrollmentGetResponse(
 
     val id: UUID,
 

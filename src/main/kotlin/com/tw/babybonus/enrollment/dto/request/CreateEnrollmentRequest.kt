@@ -1,6 +1,6 @@
 package com.tw.babybonus.enrollment.dto.request
 
-data class EnrollmentRequest(
+data class CreateEnrollmentRequest(
 
     val childNric: String,
 

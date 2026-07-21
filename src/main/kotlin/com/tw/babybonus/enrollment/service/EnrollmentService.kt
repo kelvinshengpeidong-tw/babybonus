@@ -7,8 +7,9 @@ import com.tw.babybonus.disbursement.dto.DisbursementResponse
 import com.tw.babybonus.disbursement.repository.DisbursementRepository
 import com.tw.babybonus.enrollment.domain.Enrollment
 import com.tw.babybonus.enrollment.domain.EnrollmentStatus
-import com.tw.babybonus.enrollment.dto.request.EnrollmentRequest
-import com.tw.babybonus.enrollment.dto.response.EnrollmentResponse
+import com.tw.babybonus.enrollment.dto.request.CreateEnrollmentRequest
+import com.tw.babybonus.enrollment.dto.response.EnrollmentCreatedResponse
+import com.tw.babybonus.enrollment.dto.response.EnrollmentGetResponse
 import com.tw.babybonus.enrollment.repository.EnrollmentRepository
 import com.tw.babybonus.exception.ChildNotFoundException
 import com.tw.babybonus.exception.DuplicateEnrollmentException
@@ -31,9 +32,8 @@ class EnrollmentService(
     private val iroasClient: IroasClient,
 ) {
 
-    //EnrollmentService is expected to return the masked NRIC in the response
-
-    fun enroll(request: EnrollmentRequest) {
+    //method to do the enrollment and returns back the enrollment created response if enrollment is created
+    fun enroll(request: CreateEnrollmentRequest): EnrollmentCreatedResponse {
 
         //normalize and validate the format of the child and parent NRIC
         val normalizedChildNric: String = NricValidator.formatAndValidateNric(request.childNric)
@@ -67,9 +67,16 @@ class EnrollmentService(
 
             //no disbursement is created
         }
+
+        val enrollmentCreatedResponse = EnrollmentCreatedResponse(
+            enrollment.id
+        )
+
+        return enrollmentCreatedResponse
     }
 
-    fun getEnrollment(enrollmentId: UUID): EnrollmentResponse {
+    //method to get the enrollment and returns back the response body
+    fun getEnrollment(enrollmentId: UUID): EnrollmentGetResponse {
 
         val enrollment = enrollmentRepository.findById(enrollmentId)
             .orElseThrow { EnrollmentNotFoundException() }
@@ -87,7 +94,7 @@ class EnrollmentService(
         }
 
         //child NRIC will be masked in response
-        val enrollmentResponse = EnrollmentResponse(
+        val enrollmentGetResponse = EnrollmentGetResponse(
             id = enrollment.id,
             childNric = DataMasker.maskNric(enrollment.childNric),
             status = enrollment.status,
@@ -95,10 +102,10 @@ class EnrollmentService(
             disbursement = disbursementResponse
         )
 
-        return enrollmentResponse
+        return enrollmentGetResponse
     }
 
-    private fun isEligibleForEnrollment(request: EnrollmentRequest): Boolean {
+    private fun isEligibleForEnrollment(request: CreateEnrollmentRequest): Boolean {
 
         //*** checks 1 to 3 will check if inputs are valid. Invalid inputs will throw exception ***//
 
