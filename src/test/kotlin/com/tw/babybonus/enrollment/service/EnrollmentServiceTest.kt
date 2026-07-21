@@ -130,7 +130,7 @@ class EnrollmentServiceTest
             assertEquals(DisbursementStatus.PROCESSED, savedDisbursement.status)
 
             //verify the id returned in response
-            assertEquals(savedEnrollment.id, enrollmentCreatedResponse.enrollmentID)
+            assertEquals(savedEnrollment.id, enrollmentCreatedResponse.enrollmentId)
         }
 
         //Repeat the test twice for citizenship=PERMANENT_RESIDENT and FOREIGNER
@@ -191,7 +191,7 @@ class EnrollmentServiceTest
             assertNull(savedEnrollment.enrolledAt)
 
             //verify the id returned in response
-            assertEquals(savedEnrollment.id, enrollmentCreatedResponse.enrollmentID)
+            assertEquals(savedEnrollment.id, enrollmentCreatedResponse.enrollmentId)
         }
 
         @Test
