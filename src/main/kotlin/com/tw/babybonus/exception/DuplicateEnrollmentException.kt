@@ -1,4 +1,4 @@
 package com.tw.babybonus.exception
 
-class DuplicateEnrollmentException: RuntimeException("Enrollment for child already exists in records!") {
+class DuplicateEnrollmentException: RuntimeException("Enrollment already exists for child") {
 }

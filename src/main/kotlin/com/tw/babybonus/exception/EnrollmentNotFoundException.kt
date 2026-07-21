@@ -1,4 +1,4 @@
 package com.tw.babybonus.exception
 
-class EnrollmentNotFoundException: RuntimeException("Enrollment not found!") {
+class EnrollmentNotFoundException: RuntimeException("Enrollment not found") {
 }

@@ -1,4 +1,4 @@
 package com.tw.babybonus.exception
 
-class ChildNotFoundException: RuntimeException("Child not found!") {
+class ChildNotFoundException: RuntimeException("Child not found") {
 }
