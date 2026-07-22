@@ -6,6 +6,8 @@ and initiates cash gift disbursement for eligible children.
 
 Reference: https://www.madeforfamilies.gov.sg/support-measures/child-raising/financial-support/baby-bonus-scheme
 
+Project Requirements can be found in the following directory: /docs/JUNIOR_BRIEF.md
+
 Note: This is an assignment, not a real project.
 
 ---
@@ -90,10 +92,10 @@ Test reports are generated at /build/reports/tests/test/index.html, which can be
 <br>
 
 ### API Endpoints
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/api/v1/enrollments` | Submit an enrollment application |
-| `GET` | `/api/v1/enrollments/{id}` | Retrieve enrollment status and disbursement details |
+| Method | Path                       | Description                                         |
+|--------|----------------------------|-----------------------------------------------------|
+| `POST` | `/api/v1/enrollments`      | Submit an enrollment application                    |
+| `GET`  | `/api/v1/enrollments/{id}` | Retrieve enrollment status and disbursement details |
 
 <br>
 
