@@ -8,26 +8,20 @@ Reference: https://www.madeforfamilies.gov.sg/support-measures/child-raising/fin
 
 Project Requirements can be found in the following directory: /docs/JUNIOR_BRIEF.md
 
+The project directory structure is packaged by features, followed by the layer within each feature folder
+
 Note: This is an assignment, not a real project.
 
 ---
 
-## Workflow
-
-- The project directory structure is grouped by features, followed by the layer within each feature folder
-
-
-- Test Driven Development approach was used for the tests in StubIcaClient and StubIroasClient
-	- Through this approach, managed to spot that the JSON file name for parents provided in the resource path was incorrect as the test still failed even after implementing the findParentByNric method
-
----
-
-## Tech stack
+## Tech Stack
 
 - Kotlin
 - Spring Boot
 - H2 Database
 - Gradle
+
+IntelliJ IDEA was used for this project.
 
 ---
 
@@ -155,11 +149,11 @@ __Unknown child NRIC__
 
 ```bash
 curl -i -X POST http://localhost:8080/api/v1/enrollments \
--H "Content-Type: application/json" \
--d '{
-"childNric": "T1111111A",
-"parentNric": "S8001234A"
-}'
+  -H "Content-Type: application/json" \
+  -d '{
+    "childNric": "T1111111A",
+    "parentNric": "S8001234A"
+  }'
 ```
 Expected: `404 Not Found` with message "Child not found"
 
@@ -169,11 +163,11 @@ __Unknown parent NRIC__
 
 ```bash
 curl -i -X POST http://localhost:8080/api/v1/enrollments \
--H "Content-Type: application/json" \
--d '{
-"childNric": "T2400001A",
-"parentNric": "S1111111A"
-}'
+  -H "Content-Type: application/json" \
+  -d '{
+    "childNric": "T2400001A",
+    "parentNric": "S1111111A"
+  }'
 ```
 Expected: `404 Not Found` with message "Parent not found"
 
@@ -245,19 +239,20 @@ An `INELIGIBLE` enrollment does not block re-enrollment (e.g. a child who become
 so any parent can enroll any child. This should be validated against a real relationship data source
 
 
-- **Support ongoing CDA deposits and multiple disbursements**: the `EnrollmentGetResponse` currently returns a single `Disbursement`, 
-but in reality a child could receive CDA top-ups over multiple years. This should become a list of disbursements
-
-
 - **Implement `CDA_DEPOSIT` disbursement type**: only `CASH_GIFT` is currently wired up
 
 
+- **Support ongoing `CDA_DEPOSIT` and multiple disbursements**: the `EnrollmentGetResponse` currently returns a single `Disbursement`, 
+but in reality a child could receive CDA top-ups over multiple years. This should become a list of disbursements
+
+
 - **Implement multiple `CASH_GIFT` disbursements**: in the baby bonus scheme, multiple `CASH_GIFT` of various amounts will be given over the span of an eligible child's life
-(e.g. at birth: $3000, 6 months: $1500, 12 months: $1500, etc.)
+(e.g. `at birth: $3000`, `6 months: $1500`, `12 months: $1500`, etc.)
 
 
 - **Encrypt NRIC at rest**: NRIC is currently stored in plaintext in the H2 database; given its sensitivity, this should be encrypted in the database
 rather than relying solely on masking at the API boundary
 
 
-- **Authentication/authorization**: no auth is currently implemented to secure the API endpoints; endpoints are open for access to anyone
+- **Add authentication/authorization**: no auth is currently implemented to secure the API endpoints; endpoints are open for access to anyone
+
