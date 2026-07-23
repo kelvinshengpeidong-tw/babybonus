@@ -237,9 +237,21 @@ __SQL query for all enrollments in the enrollments table__
 
 <img src="./images/query_for_enrollments.png" width="1000" alt="query_for_enrollments image">
 
+
 __SQL query for all disbursements in the disbursements table__
 
 <img src="./images/query_for_disbursements.png" width="1000" alt="query_for_disbursements image">
+
+
+__SQL query for an enrollment by its `id` in the enrollments table__
+
+<img src="./images/query_enrollments_by_id.png" width="1000" alt="query_enrollments_by_id image">
+
+
+__SQL query for all disbursements belonging to an enrollment by the `enrollment_id` in the disbursements table__
+
+<img src="./images/query_disbursements_by_enrollment_id.png" width="1000" alt="query_disbursements_by_enrollment_id image">
+
 
 8. Verify that the enrollment created for an ELIGIBLE child has the corresponding disbursement row created. 
 Likewise, the enrollment created for an INELIGIBLE child should not have any disbursement row created for them
@@ -264,7 +276,7 @@ set -a; source .env; set +a
 ./gradlew bootRun
 ```
 
-3. Now, in the h2-console login window, you should be able to log in with your new credentials.
+3. Now, in the h2-console login window, you should be able to log in with your new credentials
 
 ---
 
