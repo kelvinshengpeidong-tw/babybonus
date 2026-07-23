@@ -74,6 +74,8 @@ Run all tests:
 
 Test reports are generated at /build/reports/tests/test/index.html, which can be viewed in the browser.
 
+__Test Coverage__
+
 | Layer	       | Test Class                                            | Covers                                                                                                                                                                                                                                                                                                                           |
 |--------------|-------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Controller   | 	EnrollmentControllerTest                             | HTTP-level request/response behavior for both POST and GET endpoints                                                                                                                                                                                                                                                             |
@@ -201,6 +203,44 @@ Repeat an enrollment request for a child that already has an `ENROLLED` or `PEND
 (does not apply to `INELIGIBLE` enrollments)
 
 Expected: `409 Conflict` with message "Enrollment already exists"
+
+---
+
+## Database Query
+
+To check that the data is saved properly in the database, you can do the following steps:
+
+1. Run the service
+
+```bash
+./gradlew bootRun
+```
+
+2. Send some successful POST curl commands to create some enrollments. The sample curl commands that 
+were provided in the earlier section for the nominal cases can be used
+
+3. Go to http://localhost:8080/h2-console/, and you will see the following Login window:
+<img src="./images/h2-console.png" width="400" alt="h2-console image">
+
+4. Set the JDBC URL: `jdbc:h2:mem:babybonus`
+
+5. For the user name and password, use the default values provided in the src/main/resources/application.yaml
+
+6. Click `Connect`
+
+7. In the next window, you can type the following SQL queries in the textbox and click `Run` to check the data that were stored in the database. 
+The query result will be displayed below the textbox
+
+__SQL query for all enrollments in the enrollments table__
+
+<img src="./images/query_for_enrollments.png" width="1000" alt="query_for_enrollments image">
+
+__SQL query for all disbursements in the disbursements table__
+
+<img src="./images/query_for_disbursements.png" width="1000" alt="query_for_disbursements image">
+
+8. Verify that the enrollment created for an ELIGIBLE child has the corresponding disbursement row created. 
+Likewise, the enrollment created for an INELIGIBLE child should not have any disbursement row created for them
 
 ---
 
