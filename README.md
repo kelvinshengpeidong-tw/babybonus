@@ -74,6 +74,8 @@ Run all tests:
 
 Test reports are generated at /build/reports/tests/test/index.html, which can be viewed in the browser.
 
+<br>
+
 __Test Coverage__
 
 | Layer	       | Test Class                                            | Covers                                                                                                                                                                                                                                                                                                                           |
@@ -241,6 +243,28 @@ __SQL query for all disbursements in the disbursements table__
 
 8. Verify that the enrollment created for an ELIGIBLE child has the corresponding disbursement row created. 
 Likewise, the enrollment created for an INELIGIBLE child should not have any disbursement row created for them
+
+
+__Set up credentials for the database__
+
+To secure your database, you can override the H2 console credentials by creating a file called 
+`.env` in the project root containing the environment variables `DB_USERNAME` and `DB_PASSWORD` set to your own credentials. 
+Then, load the environment variables before running the service. The `.env` has also been added to `.gitignore` to ensure the 
+new credentials will not accidentally be push to the git repository.
+
+1. For example, let's say the new username and password are set to `hello` and `world` in the .env:
+```bash
+DB_USERNAME=hello
+DB_PASSWORD=world
+```
+
+2. Next, run the following commands to load the variables from `.env` as environment variables and start the service:
+```bash
+set -a; source .env; set +a
+./gradlew bootRun
+```
+
+3. Now, in the h2-console login window, you should be able to log in with your new credentials.
 
 ---
 
